@@ -1,0 +1,205 @@
+# $Id$
+#
+# French translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  twompact_blijfopdehoogte.module: n/a
+#  twompact_blijfopdehoogte.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-01-29 15:02+0100\n"
+"PO-Revision-Date: 2015-01-29 15:17+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#: twompact_blijfopdehoogte.module:25 twompact_blijfopdehoogte.info:0
+msgid "2Mpact"
+msgstr "2Mpact"
+
+#: twompact_blijfopdehoogte.module:34
+msgid "Stay in touch settings"
+msgstr "Rester en contact paramètres"
+
+#: twompact_blijfopdehoogte.module:35
+msgid "Set settings for the newsletter optin form block"
+msgstr "Définir les paramètres pour le bulletin bloc de forme optin"
+
+#: twompact_blijfopdehoogte.module:53
+msgid "Administer custom settings"
+msgstr "Administrer les paramètres personnalisés"
+
+#: twompact_blijfopdehoogte.module:54
+msgid ""
+"Determines whether the logged in user has access to the settings for the "
+"newsletter option form block."
+msgstr ""
+"Détermine si l'utilisateur connecté a accès aux paramètres pour le bloc "
+"newsletter formulaire d'optin."
+
+#: twompact_blijfopdehoogte.module:109
+msgid "Info text"
+msgstr "Info texte"
+
+#: twompact_blijfopdehoogte.module:130
+msgid "Type of newsletter"
+msgstr "Type de bulletin d'information"
+
+#: twompact_blijfopdehoogte.module:131
+msgid "Select which type of newsletter we will be subscribing to."
+msgstr "Sélectionner le type de bulletin que nous allons vous abonnant à."
+
+#: twompact_blijfopdehoogte.module:156
+msgid "CiviCRM Mailing Lists"
+msgstr "CiviCRM Mailing Lists"
+
+#: twompact_blijfopdehoogte.module:157
+msgid "Select the CiviCRM Mailing list to which the emails will be subscribed."
+msgstr ""
+"Sélectionnez la liste de bulletin CiviCRM à laquelle les e-mails seront "
+"souscrites."
+
+#: twompact_blijfopdehoogte.module:187
+msgid "MailChimp Newsletters"
+msgstr "MailChimp Bulletins"
+
+#: twompact_blijfopdehoogte.module:188
+msgid "Select the MailChimp Newsletter to which the emails will be subscribed."
+msgstr ""
+"Sélectionnez le Bulletin MailChimp à laquelle les e-mails seront souscrites."
+
+#: twompact_blijfopdehoogte.module:209
+msgid ""
+"If you want to show a follow link for your Facebook profile, check this "
+"checkbox"
+msgstr ""
+"Si vous voulez montrer un lien de suivi de votre profil Facebook, cochez "
+"cette case"
+
+#: twompact_blijfopdehoogte.module:216
+msgid "The follow link for your Facebook profile"
+msgstr "Le lien de suivi de votre profil Facebook"
+
+#: twompact_blijfopdehoogte.module:230
+msgid ""
+"If you want to show a follow link for your LinkedIn profile, check this "
+"checkbox"
+msgstr ""
+"Si vous voulez montrer un lien de suivi de votre profil LinkedIn, cochez "
+"cette case"
+
+#: twompact_blijfopdehoogte.module:237
+msgid "The follow link for your LinkedIn profile"
+msgstr "Le lien de suivi de votre profil LinkedIn"
+
+#: twompact_blijfopdehoogte.module:251
+msgid ""
+"If you want to show a follow link for your Twitter profile, check this "
+"checkbox"
+msgstr ""
+"Si vous voulez montrer un lien de suivi de votre profil Twitter, cochez "
+"cette case"
+
+#: twompact_blijfopdehoogte.module:258
+msgid "The follow link for your Twitter profile"
+msgstr "Le lien de suivi de votre profil Twitter"
+
+#: twompact_blijfopdehoogte.module:272;438
+msgid "Subscribe"
+msgstr "Souscrire"
+
+#: twompact_blijfopdehoogte.module:283
+msgid "Please select a mailing list"
+msgstr "S'il vous plaît sélectionner un bulletin d'information"
+
+#: twompact_blijfopdehoogte.module:287
+msgid "Please select a newsletter"
+msgstr "S'il vous plaît sélectionner un bulletin d'information"
+
+#: twompact_blijfopdehoogte.module:291
+msgid ""
+"If you wish to show a Facebook follow link, you must enter the URL for it"
+msgstr ""
+"Si vous souhaitez afficher un lien Facebook de suivi, vous devez entrer "
+"l'URL pour elle"
+
+#: twompact_blijfopdehoogte.module:295
+msgid ""
+"If you wish to show a LinkedIn follow link, you must enter the URL for it"
+msgstr ""
+"Si vous souhaitez afficher un lien LinkedIn de suivi, vous devez entrer "
+"l'URL pour elle"
+
+#: twompact_blijfopdehoogte.module:299
+msgid ""
+"If you wish to show a Twitter follow link, you must enter the URL for it"
+msgstr ""
+"Si vous souhaitez afficher un lien Twitter de suivi, vous devez entrer l'URL "
+"pour elle"
+
+#: twompact_blijfopdehoogte.module:355
+msgid "The settings have been saved."
+msgstr "Les paramètres ont été enregistrés."
+
+#: twompact_blijfopdehoogte.module:365
+msgid "Subscribe form for newsletter"
+msgstr "Formulaire d'inscription à la newsletter"
+
+#: twompact_blijfopdehoogte.module:381
+msgid "Stay in touch"
+msgstr "Rester en contact"
+
+#: twompact_blijfopdehoogte.module:389
+msgid "Stay informed"
+msgstr "Restez informé"
+
+#: twompact_blijfopdehoogte.module:416
+msgid ""
+"<p><strong>Wish to stay informed?</strong><br />Leave your e-mailaddress "
+"here.</p>"
+msgstr ""
+"<p><strong>Souhaitez rester informé?</ strong><br />Laissez votre adresse e-"
+"mail ici.</ p>"
+
+#: twompact_blijfopdehoogte.module:431
+msgid "Email"
+msgstr "Email"
+
+#: twompact_blijfopdehoogte.module:432
+msgid "The email address you wish to subscribe to the newsletter mailing list"
+msgstr ""
+"L'adresse e-mail que vous souhaitez vous abonner à la liste de diffusion du "
+"bulletin"
+
+#: twompact_blijfopdehoogte.module:469
+msgid "Or follow us on these channels"
+msgstr "Ou suivez-nous sur ces canaux"
+
+#: twompact_blijfopdehoogte.module:480
+msgid "Please enter a valid email address"
+msgstr "S'il vous plaît entrer une adresse email valide"
+
+#: twompact_blijfopdehoogte.module:526;543
+msgid "You will now receive the newsletter"
+msgstr "Vous recevrez désormais la newsletter"
+
+#: twompact_blijfopdehoogte.module:546
+msgid "Creating a new contact has failed.  Please contact the administrator."
+msgstr ""
+"Création d'un nouveau contact a échoué. S'il vous plaît contactez "
+"l'administrateur."
+
+#: twompact_blijfopdehoogte.info:0
+msgid "twompact_blijfopdehoogte"
+msgstr "twompact_blijfopdehoogte"
+
+#: twompact_blijfopdehoogte.info:0
+msgid "Custom inschrijf formulier voor MailChimp/CiviCRM"
+msgstr ""

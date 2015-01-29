@@ -1,0 +1,196 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  twompact_blijfopdehoogte.module: n/a
+#  twompact_blijfopdehoogte.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-01-29 14:53+0100\n"
+"PO-Revision-Date: 2015-01-29 15:01+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: nl\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#: twompact_blijfopdehoogte.module:25 twompact_blijfopdehoogte.info:0
+msgid "2Mpact"
+msgstr "2Mpact"
+
+#: twompact_blijfopdehoogte.module:34
+msgid "Stay in touch settings"
+msgstr "Nieuwsbrief inschrijvingen"
+
+#: twompact_blijfopdehoogte.module:35
+msgid "Set settings for the newsletter optin form block"
+msgstr "Stel de instellingen voor de nieuwsbrief optin formulier blok"
+
+#: twompact_blijfopdehoogte.module:53
+msgid "Administer custom settings"
+msgstr "Aangepaste instellingen beheren"
+
+#: twompact_blijfopdehoogte.module:54
+msgid ""
+"Determines whether the logged in user has access to the settings for the "
+"newsletter option form block."
+msgstr ""
+"Bepaalt of de ingelogde gebruiker de rechten heeft om de instellingen voor "
+"de nieuwsbrief optin formulier blok aan te passen"
+
+#: twompact_blijfopdehoogte.module:109
+msgid "Info text"
+msgstr "Informatie tekst"
+
+#: twompact_blijfopdehoogte.module:130
+msgid "Type of newsletter"
+msgstr "Type nieuwsbrief"
+
+#: twompact_blijfopdehoogte.module:131
+msgid "Select which type of newsletter we will be subscribing to."
+msgstr "Selecteer wat voor type nieuwsbrief u zal uitzenden"
+
+#: twompact_blijfopdehoogte.module:156
+msgid "CiviCRM Mailing Lists"
+msgstr "CiviCRM Mailing lijsten"
+
+#: twompact_blijfopdehoogte.module:157
+msgid "Select the CiviCRM Mailing list to which the emails will be subscribed."
+msgstr "Selecteer de CiviCRM Mailing lijst waar u de emails op wil inschrijven"
+
+#: twompact_blijfopdehoogte.module:187
+msgid "MailChimp Newsletters"
+msgstr "MailChimp nieuwsbrieven"
+
+#: twompact_blijfopdehoogte.module:188
+msgid "Select the MailChimp Newsletter to which the emails will be subscribed."
+msgstr "Selecteer de MailChimp nieuwsbrief waar u de emails op wil inschrijven"
+
+#: twompact_blijfopdehoogte.module:209
+msgid ""
+"If you want to show a follow link for your Facebook profile, check this "
+"checkbox"
+msgstr ""
+"Indien u een volglink wil tonen voor uw FaceBook profiel, vink dan deze "
+"checkbox aan"
+
+#: twompact_blijfopdehoogte.module:216
+msgid "The follow link for your Facebook profile"
+msgstr "De volglink voor uw FaceBook profiel"
+
+#: twompact_blijfopdehoogte.module:230
+msgid ""
+"If you want to show a follow link for your LinkedIn profile, check this "
+"checkbox"
+msgstr ""
+"Indien u een volglink wil tonen voor uw LinkedIn profiel, vink dan deze "
+"checkbox aan"
+
+#: twompact_blijfopdehoogte.module:237
+msgid "The follow link for your LinkedIn profile"
+msgstr "De volglink voor uw LinkedIn profiel"
+
+#: twompact_blijfopdehoogte.module:251
+msgid ""
+"If you want to show a follow link for your Twitter profile, check this "
+"checkbox"
+msgstr ""
+"Indien u een volglink wil tonen voor uw Twitter profiel, vink dan deze "
+"checkbox aan"
+
+#: twompact_blijfopdehoogte.module:258
+msgid "The follow link for your Twitter profile"
+msgstr "De volglink voor uw Twitter profiel"
+
+#: twompact_blijfopdehoogte.module:272;438
+msgid "Subscribe"
+msgstr "Inschrijven"
+
+#: twompact_blijfopdehoogte.module:283
+msgid "Please select a mailing list"
+msgstr "Gelieve een mailing lijst te selecteren"
+
+#: twompact_blijfopdehoogte.module:287
+msgid "Please select a newsletter"
+msgstr "Gelieve een nieuwsbrief te selecteren"
+
+#: twompact_blijfopdehoogte.module:291
+msgid ""
+"If you wish to show a Facebook follow link, you must enter the URL for it"
+msgstr "Als u een FaceBook volglink wil tonen, moet u de URL ingeven"
+
+#: twompact_blijfopdehoogte.module:295
+msgid ""
+"If you wish to show a LinkedIn follow link, you must enter the URL for it"
+msgstr "Als u een LinkedIn volglink wil tonen, moet u de URL ingeven"
+
+#: twompact_blijfopdehoogte.module:299
+msgid ""
+"If you wish to show a Twitter follow link, you must enter the URL for it"
+msgstr "Als u een Twitter volglink wil tonen, moet u de URL ingeven"
+
+#: twompact_blijfopdehoogte.module:355
+msgid "The settings have been saved."
+msgstr "De instellingen zijn opgeslagen."
+
+#: twompact_blijfopdehoogte.module:365
+msgid "Subscribe form for newsletter"
+msgstr "Inschrijfformulier voor de nieuwsbrief"
+
+#: twompact_blijfopdehoogte.module:381
+msgid "Stay in touch"
+msgstr "Blijf op de hoogte"
+
+#: twompact_blijfopdehoogte.module:389
+msgid "Stay informed"
+msgstr "Blijf op de hoogte inschrijfformulier"
+
+#: twompact_blijfopdehoogte.module:416
+msgid ""
+"<p><strong>Wish to stay informed?</strong><br />Leave your e-mailaddress "
+"here.</p>"
+msgstr ""
+"<p><strong>Wenst u op de hoogte te blijven?</strong><br />Laat hier uw "
+"emailadres achter.</p>"
+
+#: twompact_blijfopdehoogte.module:431
+msgid "Email"
+msgstr "Email"
+
+#: twompact_blijfopdehoogte.module:432
+msgid "The email address you wish to subscribe to the newsletter mailing list"
+msgstr "Het emailadres waarmee u zich wil inschrijven op de nieuwsbrief lijst"
+
+#: twompact_blijfopdehoogte.module:469
+msgid "Or follow us on these channels"
+msgstr "Of volg ons op deze kanalen"
+
+#: twompact_blijfopdehoogte.module:480
+msgid "Please enter a valid email address"
+msgstr "Gelieve een geldig emailadres in te geven"
+
+#: twompact_blijfopdehoogte.module:526;543
+msgid "You will now receive the newsletter"
+msgstr "U zal vanaf nu de nieuwsbrief ontvangen"
+
+#: twompact_blijfopdehoogte.module:546
+msgid "Creating a new contact has failed.  Please contact the administrator."
+msgstr ""
+"Een nieuw contact aanmaken is niet gelukt.  Gelieve de beheerder te "
+"contacteren."
+
+#: twompact_blijfopdehoogte.info:0
+msgid "twompact_blijfopdehoogte"
+msgstr "twompact_blijfopdehoogte"
+
+#: twompact_blijfopdehoogte.info:0
+msgid "Custom inschrijf formulier voor MailChimp/CiviCRM"
+msgstr ""
+"Aangepast inschrijfformulier voor MailChimp en CiviCRM.  Of een standaard "
+"opslag in de database indien de andere 2 opties niet van toepassing zijn"
