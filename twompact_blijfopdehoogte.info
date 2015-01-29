@@ -1,0 +1,4 @@
+name = twompact_blijfopdehoogte
+description = Custom inschrijf formulier voor MailChimp/CiviCRM
+core = 7.x
+package = 2Mpact

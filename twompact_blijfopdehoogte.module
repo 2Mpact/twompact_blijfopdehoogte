@@ -1,0 +1,512 @@
+<?php
+
+/**
+ * Implementation of hook_init()
+ *
+ * Activates the civicrm api en includes a file for connection with the mailchimp api
+ */
+function twompact_blijfopdehoogte_init() {
+  // intialize civicrm api
+  civicrm_initialize();
+  // include for connection with mailchimp api
+  include_once('api/MailChimp.php');
+}
+
+/**
+ * Implementation of hook_menu
+ */
+
+function twompact_blijfopdehoogte_menu() {
+  $items['admin/config/2mpact'] = array(
+    'title' => t('2Mpact'),
+    'position' => 'right',
+    'weight' => -5,
+    'page callback' => 'system_admin_menu_block_page',
+    'access callback' => TRUE,
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system')
+  );
+  $items['admin/config/2mpact/blijfopdehoogte'] = array(
+    'title' => t('Stay in touch settings'),
+    'description' => t('Set settings for the newsletter optin form block'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('twompact_blijfopdehoogte_admin_form'),
+    'access arguments' => array('administer settings newsletter optin'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+* Implementation of hook_permission().
+*/
+function twompact_blijfopdehoogte_permission() {
+  // Extra permissie aanmaken om te bepalen welke users toegang hebben tot de custom settings en een geavanceerde
+  // permissie voor bepaalde instellingen (zoals Google Analytics code)
+  return array(
+    'administer settings newsletter optin' => array(
+      'title' => t('Administer custom settings'),
+      'description' => t('Determines whether the logged in user has access to the settings for the newsletter option form block.'),
+    ),
+  );
+}
+
+
+
+/**
+ * Admin formulier voor de instellingen voor het blijfopdehoogte blok.
+ */
+function twompact_blijfopdehoogte_admin_form() {
+  // basic form aanmaken
+  $form = array(
+    '#action' => '',
+    '#method' => 'post',
+    '#prefix' => '<div class="twompact_settings">',
+    '#suffix' => '</div>',
+  );
+
+  // ophalen van de talen, het tekstveld met uitleg moet in alle beschikbare talen kunnen ingegeven worden
+  $languages = language_list();
+
+  if(!empty($languages) && is_array($languages)) {
+    foreach($languages as $lang => $data) {
+      /**
+       * uitlegveld over de nieuwsbrieven per taal, sinds het een tekstveld met editor is, zal het resultaat van variable_store_get
+       * een array zijn van het formaat:
+       *
+       * array(
+       *   'value' => de ingevoerde tekst
+       *   'format' => formaat van de editor (full_html, filtered_html, ...)
+       * )
+       */
+      $value = variable_store_get('language', $lang, 'blijfopdehoogte_infotext', '');
+      $form['blijfopdehoogte_infotext_' . $lang] = array(
+        '#type' => 'text_format',
+        '#title' => t('Info text ' . strtoupper($lang)),
+        '#default_value' => $value['value'],
+        '#format' => 'full_html',
+      );
+    }
+  }
+  else {
+    /**
+     * uitlegveld over de nieuwsbrieven per taal, sinds het een tekstveld met editor is, zal het resultaat van variable_get
+     * een array zijn van het formaat:
+     *
+     * array(
+     *   'value' => de ingevoerde tekst
+     *   'format' => formaat van de editor (full_html, filtered_html, ...)
+     * )
+     */
+    $value = variable_get('blijfopdehoogte_infotext', '');
+    $form['blijfopdehoogte_infotext'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Info text'),
+      '#default_value' => $value['value'],
+      '#format' => 'full_html',
+    );
+  }
+
+  $options = array();
+  // basis optie voor bijhouden van email adressen
+  $options['basic'] = 'Basis E-mailopslag';
+
+  if(module_exists('civicrm')) {
+    $options['civicrm'] = 'CiviMail Mailing';
+  }
+
+  if(!is_null(variable_get('mailchimp_account', NULL))) {
+    $options['mailchimp'] = 'MailChimp Newsletter';
+  }
+
+  // emailveld
+  $form['blijfopdehoogte_type_newsletter'] = array(
+    '#type' => 'select',
+    '#title' => t('Type of newsletter'),
+    '#description' => t('Select which type of newsletter we will be subscribing to.'),
+    '#required' => TRUE,
+    '#options' => $options,
+    '#default_value' => variable_get('blijfopdehoogte_type_newsletter', 'civicrm'),
+  );
+
+  // get civicrm mailing lists
+  $civicrm_mailings = civicrm_api3('Group', 'get', array(
+    'sequential' => 1,
+    'group_type' => 2, // type 2 is Mailing List groepen, type 1 zijn access control groepen, opgepast dus!
+    'return' => 'id,title',
+  ));
+
+  // if we found civicrm mailing lists, put them in a select list to use as options in the form
+  $civicrm_opties = array();
+  if(!empty($civicrm_mailings['values']) && is_array($civicrm_mailings['values'])) {
+    foreach($civicrm_mailings['values'] as $mailing_idx => $mailing) {
+      $civicrm_opties[$mailing['id']] = $mailing['title'];
+    }
+  }
+
+  // select list with possible civicrm mailing lists
+  $form['blijfopdehoogte_civicrm_mailing_keuze'] = array(
+    '#type' => 'select',
+    '#title' => t('CiviCRM Mailing Lists'),
+    '#description' => t('Select the CiviCRM Mailing list to which the emails will be subscribed.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="blijfopdehoogte_type_newsletter"]' => array('value' => 'civicrm'),
+      ),
+      'required' => array(
+        ':input[name="blijfopdehoogte_type_newsletter"]' => array('value' => 'civicrm'),
+      )
+    ),
+    '#options' => $civicrm_opties,
+    '#default_value' => variable_get('blijfopdehoogte_civicrm_mailing_keuze', ''),
+  );
+
+  // connect with mailchimp api
+  $mailchimp_api = new MailChimp(variable_get('mailchimp_account'));
+
+  // get mailchimp lists
+  $mailchimp_lists = $mailchimp_api->call('lists/list');
+  $mailchimp_opties = array();
+  if(!empty($mailchimp_lists['data']) && is_array($mailchimp_lists['data'])) {
+    foreach($mailchimp_lists['data'] as $mailchimp_idx => $mc_list) {
+      $mailchimp_opties[$mc_list['id']] = $mc_list['name'];
+    }
+  }
+
+  // select list with possible mailchimp newsletters
+  $form['blijfopdehoogte_mailchimp_newsletter_keuze'] = array(
+    '#type' => 'select',
+    '#title' => t('MailChimp Newsletters'),
+    '#description' => t('Select the MailChimp Newsletter to which the emails will be subscribed.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="blijfopdehoogte_type_newsletter"]' => array('value' => 'mailchimp'),
+      ),
+      'required' => array(
+        ':input[name="blijfopdehoogte_type_newsletter"]' => array('value' => 'mailchimp'),
+      )
+    ),
+    '#options' => $mailchimp_opties,
+    '#default_value' => variable_get('blijfopdehoogte_mailchimp_newsletter_keuze', ''),
+  );
+
+  /**
+   * We tonen ook een paar links naar social media sites waar ze ook kunnen volgen, we moeten weten wat de links zijn
+   * naar deze pagina's.  Standaard FB, LinkedIn en Twitter
+   */
+  $form['facebook_check'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'FaceBook volg link tonen?',
+    '#description' => t('If you want to show a follow link for your Facebook profile, check this checkbox'),
+    '#default_value' => variable_get('facebook_check', 0),
+  );
+
+  $form['facebook_link'] = array(
+    '#type' => 'textfield',
+    '#title' => 'FaceBook volg link',
+    '#description' => t('The follow link for your Facebook profile'),
+    /*'#states' => array(
+      'visible' => array(
+        ':input[name="facebook_check"]' => array('value' => 1),
+      ),
+      'required' => array(
+        ':input[name="facebook_check"]' => array('value' => 1),
+      )
+    )*/
+  );
+
+  $form['linkedin_check'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'LinkedIn',
+    '#description' => t('If you want to show a follow link for your LinkedIn profile, check this checkbox'),
+    '#default_value' => variable_get('linkedin_check', 0),
+  );
+
+  $form['linkedin_link'] = array(
+    '#type' => 'textfield',
+    '#title' => 'LinkedIn volg link',
+    '#description' => t('The follow link for your LinkedIn profile'),
+    /*'#states' => array(
+      'visible' => array(
+        ':input[name="linkedin_check"]' => array('value' => 1),
+      ),
+      'required' => array(
+        ':input[name="linkedin_check"]' => array('value' => 1),
+      )
+    )*/
+  );
+
+  $form['twitter_check'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Twitter',
+    '#description' => t('If you want to show a follow link for your Twitter profile, check this checkbox'),
+    '#default_value' => variable_get('twitter_check', 0),
+  );
+
+  $form['twitter_link'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Twitter volg link',
+    '#description' => t('The follow link for your Twitter profile'),
+    /*'#states' => array(
+      'visible' => array(
+        ':input[name="twitter_check"]' => array('value' => 1),
+      ),
+      'required' => array(
+        ':input[name="twitter_check"]' => array('value' => 1),
+      )
+    )*/
+  );
+
+  // submit button
+  $form['submit_twompact_blijfopdehoogte'] = array(
+    '#type' => 'submit',
+    '#value' => t('Subscribe'),
+  );
+
+  return $form;
+}
+
+function twompact_blijfopdehoogte_admin_form_validate($form, &$form_state) {
+  $values = $form_state['values'];
+
+  // if the type of newsletter is civicrm then we need a value in the select list of possible civicrm mailing lists
+  if($values['blijfopdehoogte_type_newsletter'] == 'civicrm' && empty($values['blijfopdehoogte_civicrm_mailing_keuze'])) {
+    form_set_error('blijfopdehoogte_civicrm_mailing_keuze', t('Please select a mailing list'));
+  }
+  // if the type of newsletter is mailchimp then we need a value in the select list of possible mailchimp newsletters
+  if($values['blijfopdehoogte_type_newsletter'] == 'mailchimp' && empty($values['blijfopdehoogte_mailchimp_newsletter_keuze'])) {
+    form_set_error('blijfopdehoogte_mailchimp_newsletter_keuze', t('Please select a newsletter'));
+  }
+  // if a Facebook follow link should be shown, the link must be entered
+  if($values['facebook_check'] && empty($values['facebook_link'])) {
+    form_set_error('facebook_link', t('If you wish to show a Facebook follow link, you must enter the URL for it'));
+  }
+  // if a LinkedIn follow link should be shown, the link must be entered
+  if($values['linkedin_check'] && empty($values['linkedin_link'])) {
+    form_set_error('linkedin_link', t('If you wish to show a LinkedIn follow link, you must enter the URL for it'));
+  }
+  // if a Twitter follow link should be shown, the link must be entered
+  if($values['twitter_check'] && empty($values['twitter_link'])) {
+    form_set_error('twitter_link', t('If you wish to show a Twitter follow link, you must enter the URL for it'));
+  }
+}
+
+function twompact_blijfopdehoogte_admin_form_submit($form, &$form_state) {
+  $type_newsletter = $form_state['values']['blijfopdehoogte_type_newsletter'];
+  $civicrm_mailing_keuze = $form_state['values']['blijfopdehoogte_civicrm_mailing_keuze'];
+  $mailchimp_newsletter_keuze = $form_state['values']['blijfopdehoogte_mailchimp_newsletter_keuze'];
+  $facebook_check = $form_state['values']['facebook_check'];
+  $facebook_link = $form_state['values']['facebook_link'];
+  $linkedin_check = $form_state['values']['linkedin_check'];
+  $linkedin_link = $form_state['values']['linkedin_link'];
+  $twitter_check = $form_state['values']['twitter_check'];
+  $twitter_link = $form_state['values']['twitter_link'];
+
+  variable_set('blijfopdehoogte_type_newsletter', $type_newsletter);
+  variable_set('blijfopdehoogte_civicrm_mailing_keuze', $civicrm_mailing_keuze);
+  variable_set('blijfopdehoogte_mailchimp_newsletter_keuze', $mailchimp_newsletter_keuze);
+
+  $languages = language_list();
+
+  // opslaan van het uitlegveld.  Opgelet echter als er meerdere talen actief zijn dan moeten we dit opslaan met
+  // variable_store_set ipv variable_set ifv de meertaligheid
+  if(count($languages) > 1) {
+    foreach($languages as $lang => $data) {
+      variable_store_set('language', $lang, 'blijfopdehoogte_infotext', $form_state['values']['blijfopdehoogte_infotext_' . $lang]);
+    }
+  }
+  else {
+    variable_set('blijfopdehoogte_infotext', $info_newsletter);
+  }
+
+  variable_set('facebook_check', $facebook_check);
+  variable_set('facebook_link', $facebook_link);
+  variable_set('linkedin_check', $linkedin_check);
+  variable_set('linkedin_link', $linkedin_link);
+  variable_set('twitter_check', $twitter_check);
+  variable_set('twitter_link', $twitter_link);
+
+  drupal_set_message(t('The settings have been saved.'));
+}
+
+/**
+ * Implementatie van hook_block_info - declaring blocks
+ *
+ * @return array  $blocks   The declared blocks
+ */
+function twompact_blijfopdehoogte_block_info() {
+  $blocks['blijfopdehoogte_subscribe_form'] = array(
+    'info' => t('Subscribe form for newsletter'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implementation of hook_block_view - giving content to blocks
+ *
+ * @param string $delta     The delta of the block we wish to render
+ * @return array $block     The block we wish to render
+ */
+function twompact_blijfopdehoogte_block_view($delta = '') {
+  switch($delta) {
+    case 'blijfopdehoogte_subscribe_form':
+      $form = drupal_render(drupal_get_form('twompact_blijfopdehoogte_subscribe_form'));
+      $blijf_op_de_hoogte = t('Stay in touch');
+      $content =<<<STR
+<div class="widget_tekst">
+  $form
+</div>
+STR;
+
+      $block = array(
+        'subject' => t('Stay informed'),
+        'content' => $content,
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * This function will create a simple form with an email field with which we can subscribe an email address to the
+ * newsletter mailing list
+ *
+ * @return array $form    The form array
+ */
+function twompact_blijfopdehoogte_subscribe_form() {
+  // create basic form
+  $form = array(
+    '#action' => '',
+    '#method' => 'post',
+  );
+
+  $form['uitleg'] = array(
+    '#type' => 'markup',
+    '#markup' => '<p><strong>' . t('Wish to stay informed?') . '</strong><br />' . t('Leave your e-mailaddress here.') . '</p>',
+  );
+
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#description' => t('The email address you wish to subscribe to the newsletter mailing list'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Subscribe'),
+    '#attributes' => array(
+      'class' => array(
+        'btn-primary',
+      )
+    )
+  );
+
+  // bepalen of we ook social media follow links moeten tonen
+  $facebook_check = variable_get('facebook_check', 0);
+  $linkedin_check = variable_get('linkedin_check', 0);
+  $twitter_check = variable_get('twitter_check', 0);
+
+  // er moet minstens 1 van de social media aangeduid zijn
+  if($facebook_check || $linkedin_check || $twitter_check) {
+    // als facebook follow check is aangeduid, maken we een facebook link aan
+    $facebook_link = '';
+    if($facebook_check) {
+      $facebook_link = '<li><a href="' . variable_get('facebook_link', 'http://www.facebook.com') . '" class="a2a_button_facebook">Facebook</a></li>';
+    }
+    $linkedin_link = '';
+    if($linkedin_check) {
+      $linkedin_link = '<li><a href="' . variable_get('linkedin_link', 'http://www.linkedin.com') . '" class="a2a_button_linkedin">LinkedIn</a></li>';
+    }
+    $twitter_link = '';
+    if($twitter_check) {
+      $twitter_link = '<li><a href="' . variable_get('twitter_link', 'http://www.twitter.com') . '" class="a2a_button_twitter">Twitter</a></li>';
+    }
+
+    $form['social_media'] = array(
+      '#type' => 'markup',
+      '#markup' => '<br /><br /><p><strong>' . t('Or follow us on these channels') . ':</strong><br /><ul class="clean">' . $twitter_link . $facebook_link . $linkedin_link . '</ul>',
+    );
+  }
+
+  return $form;
+}
+
+function twompact_blijfopdehoogte_subscribe_form_validate($form, &$form_state) {
+  $values = $form_state['values'];
+
+  if(!valid_email_address($values['email'])) {
+    form_set_error('email', t('Please enter a valid email address'));
+  }
+}
+
+function twompact_blijfopdehoogte_subscribe_form_submit($form, &$form_state) {
+  // check where the subscription needs to go: civicrm or mailchimp
+  $type_newsletter = variable_get('blijfopdehoogte_type_newsletter', NULL);
+  // ingegeven email ophalen
+  $email = $form_state['values']['email'];
+
+  // subscribe to mailchimp newsletter
+  if($type_newsletter == 'basic') {
+    // aparte registratie doen in database van de inschrijving
+    $sql = db_insert('newsletter_registrations')
+      ->fields(array('email' => $email, 'timestamp' => time()))
+      ->execute();
+  }
+  elseif($type_newsletter == 'mailchimp') {
+    // connect with mailchimp api
+    $mailchimp_api = new MailChimp(variable_get('mailchimp_account'));
+
+    $api_call = $mailchimp_api->call('lists/subscribe', array(
+      'id' => variable_get('blijfopdehoogte_mailchimp_newsletter_keuze'),
+      'email' => $email,
+    ));
+
+    if($api_call['status'] != 'error') {
+      drupal_set_message('You will now receive the newsletter');
+    }
+  }
+  // subscribe to civicrm mailing list
+  elseif($type_newsletter == 'civicrm') {
+    // kijken of het contact reeds bestaat in civivrm ahv email
+    $contact_exists = civicrm_api3('Contact', 'get', array(
+      'sequential' => 1,
+      'return' => 'id',
+      'email' => $email,
+    ));
+
+    // contact bestaat, enkel toevoegen aan groep
+    if($contact_exists['count'] >= 1) {
+      civicrm_api3('GroupContact', 'create', array(
+        'group_id' => variable_get('blijfopdehoogte_civicrm_mailing_keuze', ''),
+        'contact_id' => $contact_exists['values'][0]['id'],
+      ));
+
+      drupal_set_message(t('You will now receive the newsletter'));
+    }
+    // contact bestaat niet
+    else {
+      // we have to create a new contact before we can add it to the mailing list
+      $new_contact = civicrm_api3('Contact', 'Create', array(
+        'sequential' => 1,
+        'contact_type' => 'Individual',
+        'email' => $email,
+      ));
+
+      if(!$new_contact['is_error']) {
+        civicrm_api3('GroupContact', 'create', array(
+          'group_id' => variable_get('blijfopdehoogte_civicrm_mailing_keuze', ''),
+          'contact_id' => $new_contact['id'],
+        ));
+
+        drupal_set_message(t('You will now receive the newsletter'));
+      }
+      else {
+        drupal_set_message(t('Creating a new contact has failed.  Please contact the administrator.'));
+      }
+    }
+  }
+}
