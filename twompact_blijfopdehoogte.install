@@ -1,0 +1,52 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+function twompact_blijfopdehoogte_install() {
+  // standaard newsletter optin is het basic inschrijving
+  variable_set('blijfopdehoogte_type_newsletter', 'basic');
+}
+
+function twompact_blijfopdehoogte_uninstall() {
+  variable_del('blijvopdehoogte_type_newsletter');
+}
+
+function twompact_blijfopdehoogte_schema() {
+  $schema['newsletter_subscriptions'] = array(
+
+    // Example (partial) specification for table "node".
+    'description' => 'The base table for the basic newsletter optin of the website.',
+    'fields' => array(
+      'nsid' => array(
+        'description' => 'The primary ID for this table',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'email' => array(
+        'description' => 'The email address that has been opted in.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'timestamp' => array(
+        'description' => 'The timestamp when the email address was opted in.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'indexes' => array(
+      'email' => array('email'),
+    ),
+    'primary key' => array('nsid'),
+  );
+  return $schema;
+}
+
+?>
