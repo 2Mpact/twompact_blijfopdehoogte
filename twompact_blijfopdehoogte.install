@@ -28,8 +28,8 @@ function twompact_blijfopdehoogte_schema() {
       ),
       'email' => array(
         'description' => 'The email address that has been opted in.',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
         'default' => 0,
       ),
@@ -40,6 +40,13 @@ function twompact_blijfopdehoogte_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'language' => array(
+        'description' => 'The language for this email address.',
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => TRUE,
+        'default' => 'nl',
+      )
     ),
     'indexes' => array(
       'email' => array('email'),

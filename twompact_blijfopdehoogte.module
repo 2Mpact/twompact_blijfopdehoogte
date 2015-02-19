@@ -119,10 +119,19 @@ function twompact_blijfopdehoogte_admin_form() {
   $options['basic'] = 'Basis E-mailopslag';
 
   if(module_exists('civicrm')) {
-    $options['civicrm'] = 'CiviMail Mailing';
+    $civicrm_mailings = civicrm_api3('Group', 'get', array(
+      'sequential' => 1,
+      'group_type' => 2, // type 2 is Mailing List groepen, type 1 zijn access control groepen, opgepast dus!
+      'return' => 'id,title',
+    ));
+
+    if($civicrm_mailings['count'] > 0) {
+      $options['civicrm'] = 'CiviMail Mailing';
+    }
   }
 
-  if(!is_null(variable_get('mailchimp_account', NULL))) {
+  $mailchimp_apikey = variable_get('mailchimp_account', NULL);
+  if(!is_null($mailchimp_apikey) && !empty($mailchimp_apikey)) {
     $options['mailchimp'] = 'MailChimp Newsletter';
   }
 
@@ -138,12 +147,6 @@ function twompact_blijfopdehoogte_admin_form() {
 
   // get civicrm mailing lists
   if(module_exists('civicrm')) {
-    $civicrm_mailings = civicrm_api3('Group', 'get', array(
-      'sequential' => 1,
-      'group_type' => 2, // type 2 is Mailing List groepen, type 1 zijn access control groepen, opgepast dus!
-      'return' => 'id,title',
-    ));
-
     // if we found civicrm mailing lists, put them in a select list to use as options in the form
     $civicrm_opties = array();
     if(!empty($civicrm_mailings['values']) && is_array($civicrm_mailings['values'])) {
@@ -382,7 +385,8 @@ function twompact_blijfopdehoogte_block_info() {
 function twompact_blijfopdehoogte_block_view($delta = '') {
   switch($delta) {
     case 'blijfopdehoogte_subscribe_form':
-      $form = drupal_render(drupal_get_form('twompact_blijfopdehoogte_subscribe_form'));
+      $form_array = drupal_get_form('twompact_blijfopdehoogte_subscribe_form');
+      $form = drupal_render($form_array);
       $blijf_op_de_hoogte = t('Stay in touch');
       $content =<<<STR
 <div class="widget_tekst">
@@ -506,7 +510,7 @@ function twompact_blijfopdehoogte_subscribe_form_submit($form, &$form_state) {
   if($type_newsletter == 'basic') {
     // aparte registratie doen in database van de inschrijving
     $sql = db_insert('newsletter_subscriptions')
-      ->fields(array('email' => $email, 'timestamp' => time(), 'taal' => $taal))
+      ->fields(array('email' => $email, 'timestamp' => time(), 'language' => $taal))
       ->execute();
 
     drupal_set_message(t('You will now receive the newsletter'));
