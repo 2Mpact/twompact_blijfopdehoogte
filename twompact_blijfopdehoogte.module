@@ -550,8 +550,6 @@ function twompact_blijfopdehoogte_subscribe_form_submit($form, &$form_state) {
   global $language;
   $taal = $language->language;
 
-  dpm($form_state);
-
   // check where the subscription needs to go: civicrm or mailchimp
   $type_newsletter = variable_get('blijfopdehoogte_type_newsletter', NULL);
   // ingegeven email ophalen
@@ -594,7 +592,9 @@ function twompact_blijfopdehoogte_subscribe_form_submit($form, &$form_state) {
     ));
 
     // contact bestaat, enkel toevoegen aan groep
-    if($contact_exists['count'] >= 1) {
+    if(!$contact_exists['is_error'] && $contact_exists['count'] >= 1) {
+      $contact_exists = $contact_exists['values'][0];
+
       if(!empty($form_state['values']['groups']) && is_array($form_state['values']['groups'])) {
         foreach($form_state['values']['groups'] as $tmp_idx => $groep_id) {
           if($groep_id != 0) {
